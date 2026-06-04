@@ -821,8 +821,8 @@ function downloadAssignmentPDF(id, filename) {
         const imgWidth = canvas.width;
         const imgHeight = canvas.height;
         
-        // PDF siempre vertical (portrait) A4
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        // PDF siempre horizontal (landscape) A4
+        const pdf = new jsPDF('l', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
         const pdfPageHeight = pdf.internal.pageSize.getHeight() - 20;
         let finalWidth = pdfWidth;
