@@ -821,12 +821,23 @@ function downloadAssignmentPDF(id, filename) {
         const imgWidth = canvas.width;
         const imgHeight = canvas.height;
         
-        // PDF vertical (portrait) A4
+        // PDF siempre vertical (portrait) A4
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth() - 20; // 10mm margin each side
-        const pdfHeight = (imgHeight * pdfWidth) / imgWidth;
+        const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
+        const pdfPageHeight = pdf.internal.pageSize.getHeight() - 20;
+        let finalWidth = pdfWidth;
+        let finalHeight = (imgHeight * pdfWidth) / imgWidth;
         
-        pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+        // Si la imagen es más alta que la página, escalar para que quepa
+        if (finalHeight > pdfPageHeight) {
+            const ratio = pdfPageHeight / finalHeight;
+            finalHeight = pdfPageHeight;
+            finalWidth = pdfWidth * ratio;
+        }
+        
+        const xOffset = 10 + (pdfWidth - finalWidth) / 2;
+        const yOffset = 10;
+        pdf.addImage(imgData, 'PNG', xOffset, yOffset, finalWidth, finalHeight);
         pdf.save(filename + '.pdf');
     }).catch(() => {
         originals.forEach(({ input, parent, span }) => {
